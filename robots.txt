@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://paulabandeira.com.br/sitemap.xml
