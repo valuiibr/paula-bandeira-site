@@ -4,7 +4,7 @@ const nav = document.querySelector('.main-nav');
 const year = document.querySelector('#year');
 
 // Assets oficiais com nomes e extensões coerentes, mais versão para evitar cache antigo.
-const assetVersion = '20260821';
+const assetVersion = '20260821b';
 const headerLogo = document.querySelector('.brand img');
 const footerLogo = document.querySelector('.footer-brand img');
 
@@ -29,19 +29,54 @@ if (footerLogo) {
 const brandStyles = document.createElement('style');
 brandStyles.textContent = `
   .nav-wrap{height:112px}
-  .brand img{width:180px!important;height:auto!important;max-height:104px;object-fit:contain}
-  .footer-brand img{width:220px!important;height:auto!important;max-height:128px;object-fit:contain;filter:none!important;opacity:1!important}
+  .brand img{
+    width:180px!important;
+    height:auto!important;
+    max-height:104px;
+    object-fit:contain;
+  }
+
+  .footer-brand{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    width:100%;
+    min-height:96px;
+    padding:8px 0;
+    overflow:visible!important;
+  }
+  .footer-brand img{
+    display:block!important;
+    width:min(230px,100%)!important;
+    height:auto!important;
+    max-width:100%!important;
+    max-height:none!important;
+    object-fit:contain!important;
+    object-position:left center!important;
+    overflow:visible!important;
+    clip-path:none!important;
+    filter:none!important;
+    opacity:1!important;
+  }
+  .site-footer,
+  .site-footer .container,
+  .site-footer .footer-grid{
+    overflow:visible!important;
+  }
+
   @media (max-width:980px){
     .nav-wrap{height:96px}
     .main-nav{top:96px}
     .brand img{width:158px!important;max-height:90px}
-    .footer-brand img{width:200px!important;max-height:116px}
+    .footer-brand{min-height:90px}
+    .footer-brand img{width:min(215px,100%)!important;max-height:none!important}
   }
   @media (max-width:640px){
     .nav-wrap{height:90px}
     .main-nav{top:90px}
     .brand img{width:145px!important;max-height:83px}
-    .footer-brand img{width:185px!important;max-height:107px}
+    .footer-brand{min-height:84px;padding:6px 0}
+    .footer-brand img{width:min(200px,100%)!important;max-height:none!important}
   }
 `;
 document.head.appendChild(brandStyles);
