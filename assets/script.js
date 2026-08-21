@@ -3,37 +3,34 @@ const menuToggle = document.querySelector('.menu-toggle');
 const nav = document.querySelector('.main-nav');
 const year = document.querySelector('#year');
 
-// Logos oficiais da identidade visual Paula Bandeira.
+// Assets oficiais com nomes e extensões coerentes, mais versão para evitar cache antigo.
+const assetVersion = '20260821';
 const headerLogo = document.querySelector('.brand img');
 const footerLogo = document.querySelector('.footer-brand img');
 
 if (headerLogo) {
-  headerLogo.src = 'assets/logo-header.webp';
+  headerLogo.src = `assets/logo-header.png?v=${assetVersion}`;
   headerLogo.alt = 'Paula Bandeira — Neuropsicopedagoga';
+  headerLogo.onerror = () => {
+    headerLogo.onerror = null;
+    headerLogo.src = `assets/logo.png?v=${assetVersion}`;
+  };
 }
 
 if (footerLogo) {
-  footerLogo.src = 'assets/logo-footer.webp';
+  footerLogo.src = `assets/logo-footer.png?v=${assetVersion}`;
   footerLogo.alt = 'Paula Bandeira — Neuropsicopedagoga';
+  footerLogo.onerror = () => {
+    footerLogo.onerror = null;
+    footerLogo.src = `assets/logo.png?v=${assetVersion}`;
+  };
 }
 
 const brandStyles = document.createElement('style');
 brandStyles.textContent = `
   .nav-wrap{height:112px}
-  .brand img{
-    width:180px!important;
-    height:auto!important;
-    max-height:104px;
-    object-fit:contain;
-  }
-  .footer-brand img{
-    width:220px!important;
-    height:auto!important;
-    max-height:128px;
-    object-fit:contain;
-    filter:none!important;
-    opacity:1!important;
-  }
+  .brand img{width:180px!important;height:auto!important;max-height:104px;object-fit:contain}
+  .footer-brand img{width:220px!important;height:auto!important;max-height:128px;object-fit:contain;filter:none!important;opacity:1!important}
   @media (max-width:980px){
     .nav-wrap{height:96px}
     .main-nav{top:96px}
@@ -51,34 +48,53 @@ document.head.appendChild(brandStyles);
 
 const profileMark = document.querySelector('.credential-mark');
 if (profileMark) {
+  const originalMarkup = profileMark.innerHTML;
+  const photo = document.createElement('img');
+  photo.src = `assets/paula-bandeira-photo.jpg?v=${assetVersion}`;
+  photo.alt = 'Paula Bandeira, Neuropsicopedagoga';
+  photo.className = 'profile-photo-img';
+
   const profileStyles = document.createElement('style');
   profileStyles.textContent = `
     .credential-mark.profile-photo{
       width:min(72%,330px);
-      height:auto !important;
+      height:auto!important;
       aspect-ratio:3/4;
       display:block;
+      padding:0;
+      overflow:hidden;
       border-radius:30px;
-      background:url('assets/paula-bandeira.jpg') center 28% / cover no-repeat !important;
+      background:#fff!important;
       border:7px solid rgba(255,255,255,.82);
       box-shadow:0 28px 65px rgba(83,48,53,.20);
       transform:rotate(-1.25deg);
     }
-    .credential-mark.profile-photo span,
-    .credential-mark.profile-photo small{display:none}
+    .credential-mark.profile-photo .profile-photo-img{
+      width:100%;height:100%;display:block;object-fit:cover;object-position:center 28%;
+    }
     @media (max-width:640px){
       .credential-mark.profile-photo{width:min(76%,290px);border-radius:25px;border-width:6px}
     }
   `;
   document.head.appendChild(profileStyles);
-  profileMark.classList.add('profile-photo');
-  profileMark.innerHTML = '';
-  profileMark.setAttribute('role', 'img');
-  profileMark.setAttribute('aria-label', 'Paula Bandeira, Neuropsicopedagoga');
-  profileMark.closest('.credentials-visual')?.removeAttribute('aria-hidden');
+
+  photo.onload = () => {
+    profileMark.classList.add('profile-photo');
+    profileMark.innerHTML = '';
+    profileMark.appendChild(photo);
+    profileMark.setAttribute('role', 'img');
+    profileMark.setAttribute('aria-label', 'Paula Bandeira, Neuropsicopedagoga');
+    profileMark.closest('.credentials-visual')?.removeAttribute('aria-hidden');
+  };
+  photo.onerror = () => {
+    profileMark.classList.remove('profile-photo');
+    profileMark.innerHTML = originalMarkup;
+  };
 }
 
-const updateHeader = () => header.classList.toggle('scrolled', window.scrollY > 24);
+const updateHeader = () => {
+  if (header) header.classList.toggle('scrolled', window.scrollY > 24);
+};
 updateHeader();
 window.addEventListener('scroll', updateHeader, { passive: true });
 
@@ -96,13 +112,16 @@ if (menuToggle && nav) {
   }));
 }
 
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.classList.add('visible');
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.12 });
-
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+if ('IntersectionObserver' in window) {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+} else {
+  document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
+}
